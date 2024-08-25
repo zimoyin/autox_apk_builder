@@ -3,13 +3,18 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.github"
+group = "com.github.zimoyin"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    mavenCentral()
     google()
+    mavenCentral()
 }
+
+tasks.register("install") {
+    dependsOn("publishToMavenLocal")
+}
+
 
 dependencies {
     implementation(files("libs/apksigner/0.9/apksigner.jar"))
@@ -30,8 +35,9 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(18)
 }
 
 publishing {
