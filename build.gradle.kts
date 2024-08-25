@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.0"
     id("maven-publish")
+    `maven-publish`
 }
 
 group = "com.github.zimoyin"
@@ -33,7 +34,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(18)
+    jvmToolchain(17)
 }
 
 publishing {
