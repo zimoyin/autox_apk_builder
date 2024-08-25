@@ -3,7 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.github.autojsx_apk_builder_2"
+group = "com.github"
 version = "1.0-SNAPSHOT"
 
 repositories {
