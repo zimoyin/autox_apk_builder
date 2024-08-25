@@ -38,9 +38,9 @@ publishing {
         create<MavenPublication>("maven") {
             from(components["kotlin"])
 //            // 添加 apksigner.jar
-//            artifact(file("libs/apksigner/0.9/apksigner.jar")) {
-//                classifier = "apksigner"
-//            }
+            artifact(file("libs/apksigner/0.9/apksigner.jar")) {
+                classifier = "apksigner"
+            }
 
             groupId = project.group.toString()
             artifactId = project.name
