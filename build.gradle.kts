@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "2.0.0"
-//    id("maven-publish")
-    `maven-publish`
+    id("maven-publish")
+//    `maven-publish`
 }
 
 group = "com.github.zimoyin"
