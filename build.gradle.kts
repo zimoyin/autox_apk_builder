@@ -8,12 +8,12 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-//    google()
+    google()
 }
 
 dependencies {
     implementation(files("libs/apksigner/0.9/apksigner.jar"))
-    implementation(files("libs/apktool/2.9.3/apktool.jar"))
+//    implementation(files("libs/apktool/2.9.3/apktool.jar"))
 
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.2")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.2")
@@ -22,7 +22,7 @@ dependencies {
 
     implementation("org.dom4j:dom4j:2.1.4")
 
-//    implementation("org.apktool:apktool-cli:2.9.3")
+    implementation("org.apktool:apktool-cli:2.9.3")
 
     testImplementation(kotlin("test"))
 }
@@ -43,9 +43,9 @@ publishing {
                 classifier = "apksigner"
             }
 
-            artifact(file("libs/apktool/2.9.3/apktool.jar")) {
-                classifier = "apktool"
-            }
+//            artifact(file("libs/apktool/2.9.3/apktool.jar")) {
+//                classifier = "apktool"
+//            }
 
             groupId = project.group.toString()
             artifactId = project.name
