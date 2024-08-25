@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "1.9.20"
     id("maven-publish")
     `maven-publish`
 }
 
 group = "com.github.zimoyin"
-version = "1.0-SNAPSHOT"
+version = "1.0.2-SNAPSHOT"
 
 repositories {
     google()
@@ -40,13 +40,10 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-
+            from(components["kotlin"])
             groupId = project.group.toString()
             artifactId = project.name
             version = project.version.toString()
-
-            from(components["kotlin"])
-
             artifact(file("libs/apksigner/0.9/apksigner.jar")) {
                 classifier = "apksigner"
             }
