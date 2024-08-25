@@ -11,10 +11,6 @@ repositories {
     mavenCentral()
 }
 
-tasks.register("install") {
-    dependsOn("publishToMavenLocal")
-}
-
 
 dependencies {
     implementation(files("libs/apksigner/0.9/apksigner.jar"))
@@ -37,25 +33,22 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(18)
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
+
+            groupId = project.group.toString()
+            artifactId = project.name
+            version = project.version.toString()
+
             from(components["kotlin"])
 
             artifact(file("libs/apksigner/0.9/apksigner.jar")) {
                 classifier = "apksigner"
             }
-
-//            artifact(file("libs/apktool/2.9.3/apktool.jar")) {
-//                classifier = "apktool"
-//            }
-
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
         }
     }
 }
