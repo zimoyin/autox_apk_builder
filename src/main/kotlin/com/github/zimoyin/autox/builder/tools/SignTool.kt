@@ -1,6 +1,8 @@
 package com.github.zimoyin.autox.builder.tools
 
 import com.github.zimoyin.autox.builder.log
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 /**
@@ -21,7 +23,18 @@ class SignTool {
                     val resource = Thread.currentThread().contextClassLoader.getResourceAsStream(signPath)
                         ?: throw IllegalArgumentException("sign file not found")
                     createNewFile()
-                    writeBytes(resource.readAllBytes())
+//                    writeBytes(resource.readAllBytes())
+
+                    val array = ByteArrayOutputStream()
+                    resource.use {
+                        val buffer = ByteArray(1024)
+                        var len = it.read(buffer)
+                        while (len != -1) {
+                            array.write(buffer, 0, len)
+                            len = it.read(buffer)
+                        }
+                    }
+                    writeBytes(array.toByteArray())
                 }
             }
             val command = arrayOf(
