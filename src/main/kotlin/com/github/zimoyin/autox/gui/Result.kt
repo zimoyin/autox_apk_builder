@@ -20,6 +20,25 @@ data class Result(
     var onError: ((Throwable) -> Unit)? = null
 
     fun build(): File? {
+         config.workDir?.let {workDir->
+             val workFile = File(workDir).absoluteFile
+             for (asset in config.assets) {
+                if (File(asset).absoluteFile == workFile || workFile.absolutePath.contains(File(asset).absolutePath)){
+                    // assets 不能是 workFile 的兄弟或者父亲文件夹
+                    val t = IllegalStateException("Assets cannot be the sibling or parent folder of workFile")
+                    if (onError != null) {
+                        onError?.invoke(t)
+                    } else {
+                        log("[ERROR] Assets cannot be the sibling or parent folder of workFile")
+                        t.printStackTrace()
+                    }
+                    return null
+                }
+            }
+        }
+
+
+
         return kotlin.runCatching { build0() }.onFailure {
             if (onError != null) {
                 onError?.invoke(it)
@@ -32,13 +51,17 @@ data class Result(
             if (onSuccess != null) {
                 onSuccess?.invoke(it)
             }
+            config.deleteCache()
         }.getOrNull()
     }
 
     private fun build0(): File {
+        config.deleteCache()
+        config.centralizedAssets()
         val workDir = config.workDir.let {
             if (it == null) throw IllegalArgumentException("workDir path is null")
             val file = File(it)
+            file.mkdirs()
             if (file.exists().not() || file.isFile || file.isDirectory.not()) {
                 throw IllegalArgumentException("workDir path is wrong: \n$it")
             }
