@@ -1,5 +1,6 @@
 import com.github.zimoyin.autox.builder.AutoxApkBuilder
 import com.github.zimoyin.autox.builder.copyDest
+import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import java.io.File
 
 /**
@@ -14,7 +15,9 @@ import java.io.File
 fun main() {
     val src = "out/intermediate_compilation_files"
 
+    ProjectJsonBean.findFile("project.json")
     AutoxApkBuilder()
+        .setWorkDir(File(""))
         .setAssets(src)
         .setIconPath("C:\\Users\\zimoa\\Desktop\\favicon.ico")
         .setStartIconPath("C:\\Users\\zimoa\\Pictures\\111075413_p0.png")

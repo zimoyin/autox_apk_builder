@@ -58,6 +58,7 @@ class AutoxApkBuilder {
      * 应用图标，在此处指定之后会通过修改 xml 文件来替换图标。如果你知道 autox projec.json 的 icon 机制可以从那指定，但不一定有效
      */
     fun setIconPath(iconPath0: String): AutoxApkBuilder {
+        if (iconPath0.isEmpty() || iconPath0.isBlank()) throw IllegalArgumentException("iconPath is empty.")
         iconPath = iconPath0
         return this
     }
@@ -103,6 +104,7 @@ class AutoxApkBuilder {
      * @param startIconPath0 启动页面图标（png）
      */
     fun setStartIconPath(startIconPath0: String): AutoxApkBuilder {
+        if (startIconPath0.isEmpty() || startIconPath0.isBlank()) throw IllegalArgumentException("startIconPath is empty.")
         startIconPath = startIconPath0
         return this
     }
@@ -127,6 +129,8 @@ class AutoxApkBuilder {
      * 签名配置
      */
     fun setSignConfig(signConfig0: SignConfig): AutoxApkBuilder {
+        val path = signConfig0.keyStorePath
+        if (path.isEmpty() || path.isBlank()) throw IllegalArgumentException("keyStorePath is empty.")
         signConfig = signConfig0
         return this
     }
@@ -142,7 +146,8 @@ class AutoxApkBuilder {
 
     private fun build0(): File {
         // 获取项目配置
-        val projectJson0 = projectJson?:throw IllegalArgumentException("projectJson not found. Please set it to projectJson.")
+        val projectJson0 =
+            projectJson ?: throw IllegalArgumentException("projectJson not found. Please set it to projectJson.")
         if (libSetting != null) projectJson0.libs = libSetting!!
         if (runSetting != null) projectJson0.launchConfig = runSetting!!
 
@@ -165,13 +170,13 @@ class AutoxApkBuilder {
             }
             file.absolutePath
         }
-        log("template apk path: $templateApkPath0")
+        log("[Phased 1/8] template apk path: $templateApkPath0")
 
         // 解压APk
         val decodeDir = File(workDir, "decode")
         decodeDir.mkdirs()
         ApkTool.decodeApk(templateApkPath0, decodeDir.absolutePath)
-        log("decode apk end path: ${decodeDir.absolutePath}")
+        log("[Phased 2/8] decode apk end path: ${decodeDir.absolutePath}")
 
         // 复制 assets 到 assets/project/
         val assetDir = File(decodeDir, "assets/project")
@@ -180,18 +185,18 @@ class AutoxApkBuilder {
             val assetFile = File(asset)
             assetFile.copyDest(assetDir)
         }
-        log("copy assets end path: ${assetDir.absolutePath}")
+        log("[Phased 3/8] copy assets end path: ${assetDir.absolutePath}")
 
         // 反序列化 project.json 到 assets/project/
         val project = File(decodeDir, "assets/project/project.json")
         project.delete()
         JsonUtils.objectToJsonNode(projectJson0).writeToFile(project.absolutePath)
-        log("copy project.json end path: ${project.absolutePath}")
+        log("[Phased 4/8] copy project.json end path: ${project.absolutePath}")
 
         // 处理 安卓清单文件
         val manifest = File(decodeDir, "AndroidManifest.xml")
         XmlTool(projectJson0).modify(manifest, iconPath).writeToFile(manifest.absolutePath)
-        log("modify AndroidManifest.xml end path: ${manifest.absolutePath}")
+        log("[Phased 5/8] modify AndroidManifest.xml end path: ${manifest.absolutePath}")
 
         // 处理启动页面图标
         if (startIconPath != null) {
@@ -200,13 +205,17 @@ class AutoxApkBuilder {
             val drawableMdpiV4 = File(decodeDir, "res/drawable-mdpi-v4/")
             drawableMdpiV4.mkdirs()
             val startIconFile = File(startIconPath!!)
-            if (startIconFile.extension.lowercase() != "png") {
-                throw IllegalArgumentException("start icon must be png: $startIconFile")
+            if (startIconFile.exists()) {
+                if (startIconFile.extension.lowercase() != "png") {
+                    throw IllegalArgumentException("start icon must be png: $startIconFile")
+                }
+                startIconFile.copyDest(drawable, "autojs_logo.png")
+                startIconFile.copyDest(drawableMdpiV4, "autojs_logo.png")
+                log("copy start icon end path: ${drawable.absolutePath}")
+                log("copy start icon end path: ${drawableMdpiV4.absolutePath}")
+            } else {
+                log("[ERROR] start icon not found: $startIconPath")
             }
-            startIconFile.copyDest(drawable, "autojs_logo.png")
-            startIconFile.copyDest(drawableMdpiV4, "autojs_logo.png")
-            log("copy start icon end path: ${drawable.absolutePath}")
-            log("copy start icon end path: ${drawableMdpiV4.absolutePath}")
         }
 
         // 处理应用图标
@@ -214,15 +223,19 @@ class AutoxApkBuilder {
             val drawable = File(decodeDir, "res/drawable/")
             drawable.mkdirs()
             val iconFile = File(iconPath!!)
-            iconFile.copyDest(drawable, "application")
-            log("copy icon end path: ${drawable.absolutePath}")
+            if (iconFile.exists()){
+                iconFile.copyDest(drawable, "application")
+                log("copy icon end path: ${drawable.absolutePath}")
+            }else{
+                log("[ERROR] icon not found: $iconPath")
+            }
         }
 
 
         // 压缩APK
         val encodeApk = File(workDir, "${projectJson0.name}.apk")
         ApkTool.encodeApk(decodeDir.absolutePath, encodeApk.absolutePath)
-        log("encode apk end path: ${encodeApk.absolutePath}")
+        log("[Phased 6/8] encode apk end path: ${encodeApk.absolutePath}")
 
         // 签名APK，签名使用 workDir
         val signApk = File(workDir, "${projectJson0.name}.apk")
@@ -236,22 +249,35 @@ class AutoxApkBuilder {
                 signConfig!!.keyStorePassword,
             )
         }
-        log("sign apk end path: ${signApk.absolutePath}")
-        if (signApk.exists()) log("SUCCESS")
-        else log("FAIL")
+        log("[Phased 7/8] sign apk end path: ${signApk.absolutePath}")
 
         // 清理缓存
         decodeDir.deleteRecursively()
         File(templateApkPath0).delete()
         temp.deleteOnExit()
+        log("[Phased 8/8] clean temp end")
+        log("!!!!!!!!!!!!!!!! THE END !!!!!!!!!!!!!!!!")
+        if (signApk.exists()) log("SUCCESS")
+        else log("FAIL")
         return signApk
     }
 }
 
+/**
+ * 拷贝文件到目标文件夹
+ * @param destination 目标文件夹
+ * @param name 如果 this 是文件的话，则重命名
+ */
 fun File.copyDest(destination: File, name: String? = null) {
     com.github.zimoyin.autox.builder.copy(this, destination, name)
 }
 
+/**
+ * 拷贝文件到目标文件夹
+ * @param source 源文件夹/文件
+ * @param destination 目标文件夹
+ * @param name 如果 source 是文件的话，则重命名
+ */
 fun copy(source: File, destination: File, name: String? = null) {
     if (!source.exists()) {
         throw IllegalArgumentException("Source directory doesn't exist: ${source.absolutePath}")
@@ -281,5 +307,5 @@ data class SignConfig(
     val keyStorePath: String,
     val keyStorePassword: String,
     val keyAlias: String,
-    val keyPassword: String
+//    val keyPassword: String
 )

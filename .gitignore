@@ -41,3 +41,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 /idea_plug_autox_wifi_zimo.jks
+/apk_builder_config.json

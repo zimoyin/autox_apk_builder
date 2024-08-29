@@ -261,7 +261,6 @@ object JsonUtils {
 }
 
 
-
 /**
  * JsonObject 是 ObjectNode 的封装
  */
@@ -326,8 +325,8 @@ class JsonObject(
         _put(propertyName, value)
         return try {
             super.replace(propertyName, value)
-        }catch (e: Exception){
-            throw IllegalArgumentException("replace error. key: $propertyName  value: $value",e)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("replace error. key: $propertyName  value: $value", e)
         }
     }
 
@@ -388,6 +387,21 @@ class JsonObject(
         }
     }
 
+    @Deprecated("please use getByPointer()")
+    override fun path(index: Int): JsonNode {
+        return super.path(index)
+    }
+
+    @Deprecated("please use getByPointer()")
+    override fun path(propertyName: String?): JsonNode {
+        return super.path(propertyName)
+    }
+
+    @Deprecated("please use getByPointer(pointer: JsonPointer)")
+    fun path(pointer: JsonPointer): JsonNode? {
+        return this.at(pointer)
+    }
+
     /**
      * 通过JSON指针获取值
      */
@@ -411,6 +425,11 @@ class JsonObject(
         objectMapper = objectMapper
     )
 
+
+    inline fun <reified T> toJavaObject(clazz: Class<T> = T::class.java): T {
+        return objectMapper.treeToValue(this, clazz)
+    }
+
     inline fun <reified T> parseToObject(): T {
         return objectMapper.treeToValue(this, T::class.java)
     }
@@ -421,6 +440,10 @@ class JsonObject(
 
     fun toObjectNode(): ObjectNode {
         return this
+    }
+
+    fun toJsonString(): String {
+        return JsonUtils.objectToJsonString(this.toJsonNode())
     }
 
 
