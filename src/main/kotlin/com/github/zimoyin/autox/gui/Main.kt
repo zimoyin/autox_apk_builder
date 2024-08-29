@@ -8,6 +8,7 @@ import com.github.zimoyin.autox.builder.tools.writeToFile
 import java.io.File
 import java.util.concurrent.TimeoutException
 
+const val GUI_VERSION = "1.0.3.fix2"
 
 fun main(args: Array<String>) {
     for (arg in args) {
@@ -24,6 +25,7 @@ fun main(args: Array<String>) {
             return
         }
     }
+    log("Version: $GUI_VERSION")
     val isGUI = isGui(args)
     val config = getConfig(args)
 

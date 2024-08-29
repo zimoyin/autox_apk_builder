@@ -14,7 +14,7 @@ import javax.swing.JFrame
  * @author : zimo
  * @date : 2024/08/28
  */
-class Application private constructor() : JFrame("AutoX APK Builder") {
+class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERSION") {
     companion object {
         var application: Application = FlatDarculaLaf.setup()
             .let { Application() }
