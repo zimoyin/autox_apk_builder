@@ -13,16 +13,18 @@ import java.io.File
  *
  */
 fun main() {
-    val src = "out/intermediate_compilation_files"
+//    val src = "out/intermediate_compilation_files"
+//
+//    ProjectJsonBean.findFile("project.json")
+//    AutoxApkBuilder()
+//        .setWorkDir(File(""))
+//        .setAssets(src)
+//        .setIconPath("C:\\Users\\zimoa\\Desktop\\favicon.ico")
+//        .setStartIconPath("C:\\Users\\zimoa\\Pictures\\111075413_p0.png")
+//        .build()
+//        .apply {
+//            copyDest(File("out/build"))
+//        }
 
-    ProjectJsonBean.findFile("project.json")
-    AutoxApkBuilder()
-        .setWorkDir(File(""))
-        .setAssets(src)
-        .setIconPath("C:\\Users\\zimoa\\Desktop\\favicon.ico")
-        .setStartIconPath("C:\\Users\\zimoa\\Pictures\\111075413_p0.png")
-        .build()
-        .apply {
-            copyDest(File("out/build"))
-        }
+    println(File("D:\\code\\java_kotlin\\autox_apk_builder\\out\\intermediate_compilation_files\\a").deleteRecursively())
 }
