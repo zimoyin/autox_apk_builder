@@ -35,7 +35,9 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
     private fun SettingComponent.init() {
         workDirField.text = config?.workDir ?: ""
         assetsField.text = config?.centralizedAssets() ?: ""
-        projectJsonField.text = config?.projectJson ?: ""
+        projectJsonField.text = (config?.projectJson ?: "").let {
+            if (File(it).exists()) it else ""
+        }
         templateApkPathField.text = config?.templateApkPath ?: ""
         splashImageTextField.text = config?.startIconPath ?: ""
         appIconTextField.text = config?.iconPath ?: ""

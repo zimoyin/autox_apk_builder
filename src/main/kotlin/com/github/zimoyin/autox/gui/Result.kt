@@ -4,7 +4,6 @@ import com.github.zimoyin.autox.builder.AutoxApkBuilder
 import com.github.zimoyin.autox.builder.SignConfig
 import com.github.zimoyin.autox.builder.log
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
-import com.github.zimoyin.autox.gui.ui.setting.SettingComponent
 import java.io.File
 import java.io.IOException
 

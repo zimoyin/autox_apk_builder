@@ -5,7 +5,9 @@ import com.github.zimoyin.autox.builder.setting.LibItem
 import com.github.zimoyin.autox.builder.setting.LibSetting
 import java.io.File
 import java.util.concurrent.TimeoutException
-import javax.swing.*
+import javax.swing.JButton
+import javax.swing.JCheckBox
+import javax.swing.JTextField
 import javax.swing.event.DocumentEvent
 import javax.swing.event.DocumentListener
 

@@ -75,7 +75,6 @@ private fun Any?.isNotNull(): Boolean {
 
 private fun getConfig(args0: Array<String>): ApkBuilderPojo? {
     val args = args0.toMutableList().apply { add("./apk_builder_config.json") }
-    var default: ApkBuilderPojo? = null
     for (arg in args) {
         val file = File(arg)
         if (file.exists()) {
@@ -83,11 +82,11 @@ private fun getConfig(args0: Array<String>): ApkBuilderPojo? {
                 val json = JsonObject(file.readText())
                 val gui = json.getBoolean("gui")
                 val assets = json.getObject<List<String>>("assets")
-                default = json.parseToObject<ApkBuilderPojo>()
+                return  json.parseToObject<ApkBuilderPojo>()
             }
         }
     }
-    return default
+    return null
 }
 
 private fun isGui(args0: Array<String>): Boolean {
@@ -101,6 +100,9 @@ private fun isGui(args0: Array<String>): Boolean {
         if (file.exists()) {
             runCatching {
                 result = JsonObject(file.readText()).getBoolean("gui")
+                if (result){
+                    return true
+                }
             }
         }
     }

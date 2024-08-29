@@ -1,7 +1,6 @@
 package com.github.zimoyin.autox.gui
 
 import com.github.zimoyin.autox.builder.log
-import com.github.zimoyin.autox.gui.ui.NotificationWindows
 import java.io.File
 import java.nio.file.Files
 
@@ -86,7 +85,6 @@ data class ApkBuilderPojo(
                 com.github.zimoyin.autox.builder.copy(File(asset),file)
             }.onFailure {
                 log("[ERROR] ${it.message}")
-                NotificationWindows.error("复制资源失败(请检查路径是否正确): \n${it.message}")
             }
         }
 

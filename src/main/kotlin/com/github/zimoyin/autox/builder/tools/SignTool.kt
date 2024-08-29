@@ -1,7 +1,6 @@
 package com.github.zimoyin.autox.builder.tools
 
 import com.github.zimoyin.autox.builder.log
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 

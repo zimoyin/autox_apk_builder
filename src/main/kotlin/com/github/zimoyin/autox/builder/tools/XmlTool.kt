@@ -1,11 +1,11 @@
 package com.github.zimoyin.autox.builder.tools
 
+import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import org.dom4j.Document
 import org.dom4j.Element
 import org.dom4j.io.SAXReader
 import org.dom4j.io.XMLWriter
 import org.dom4j.tree.DefaultAttribute
-import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import java.io.File
 import java.io.FileWriter
 

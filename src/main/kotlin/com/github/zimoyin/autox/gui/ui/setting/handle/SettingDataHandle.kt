@@ -1,10 +1,10 @@
 package com.github.zimoyin.autox.gui.ui.setting.handle
 
-import com.github.zimoyin.autox.builder.*
+import com.github.zimoyin.autox.builder.addLogListener
+import com.github.zimoyin.autox.builder.log
 import com.github.zimoyin.autox.builder.setting.PermissionsSetting
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import com.github.zimoyin.autox.builder.setting.RunSetting
-import com.github.zimoyin.autox.builder.tools.toJsonObject
 import com.github.zimoyin.autox.gui.ApkBuilderPojo
 import com.github.zimoyin.autox.gui.Result
 import com.github.zimoyin.autox.gui.ui.NotificationWindows

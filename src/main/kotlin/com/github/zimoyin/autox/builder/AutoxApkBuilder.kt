@@ -1,13 +1,9 @@
 package com.github.zimoyin.autox.builder
 
 import com.github.zimoyin.autox.builder.setting.LibSetting
-import com.github.zimoyin.autox.builder.tools.JsonUtils
-import com.github.zimoyin.autox.builder.tools.writeToFile
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import com.github.zimoyin.autox.builder.setting.RunSetting
-import com.github.zimoyin.autox.builder.tools.ApkTool
-import com.github.zimoyin.autox.builder.tools.SignTool
-import com.github.zimoyin.autox.builder.tools.XmlTool
+import com.github.zimoyin.autox.builder.tools.*
 import java.io.File
 import java.nio.file.Files
 
