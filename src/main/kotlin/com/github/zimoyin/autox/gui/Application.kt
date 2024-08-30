@@ -26,7 +26,6 @@ class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERS
 
             val imageIcon = ImageIcon(Application::class.java.getResource("/build.png"));
             application.iconImage = imageIcon.image.getScaledInstance(80, 80, Image.SCALE_DEFAULT)
-            application.isVisible = true
 
             // 窗体位于屏幕中间。窗体大小为 高：屏幕的五分之三，宽为 高的等比例
             val screenSize = java.awt.Toolkit.getDefaultToolkit().screenSize
@@ -44,6 +43,10 @@ class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERS
                     log("AutoX APK Builder：Exit")
                 }
             })
+
+            application.revalidate()
+            application.repaint()
+            application.isVisible = true
         }
     }
 }
