@@ -41,8 +41,8 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.zimoyin:autojsx_builder:1.0.3.fix2")
-    implementation("com.github.zimoyin:autojsx_builder:1.0.3.fix2:apksigner")
+    implementation("com.github.zimoyin:autojsx_builder:1.0.4")
+    implementation("com.github.zimoyin:autojsx_builder:1.0.4:apksigner")
     testImplementation(kotlin("test"))
 }
 
