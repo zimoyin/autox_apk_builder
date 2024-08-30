@@ -12,6 +12,7 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Insets
 import java.io.File
+import java.nio.file.Files
 import javax.swing.*
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.system.exitProcess
@@ -54,8 +55,20 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
             scmt.projectJsonButton,
             FileNameExtensionFilter("JSON File", "json")
         )
-        addField("assets 路径:", scmt.assetsField)
-        addField("工作路径:", scmt.workDirField)
+//        addField("assets 路径:", scmt.assetsField)
+//        addField("工作路径:", scmt.workDirField)
+        addFileChooserField(
+            "assets 路径:",
+            scmt.assetsField,
+            JButton("选择文件夹"),
+            fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+        )
+        addFileChooserField(
+            "工作路径:",
+            scmt.workDirField,
+            JButton("选择文件夹"),
+            fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+        )
         addFileChooserField(
             "APK模板路径:",
             scmt.templateApkPathField,
@@ -285,6 +298,7 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
             val fileChooser = JFileChooser()
             filter?.let { fileChooser.fileFilter = filter }
             // 设置文件选择模式，允许选择文件或文件夹
+            fileChooser.fileSelectionMode = fileSelectionMode
             if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 textField.text = fileChooser.selectedFile.path
             }
