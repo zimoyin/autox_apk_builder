@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.zimoyin"
-version = "1.0.3.fix3"
+version = "1.0.4"
 
 repositories {
     google()

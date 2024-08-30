@@ -8,7 +8,7 @@ import com.github.zimoyin.autox.builder.tools.writeToFile
 import java.io.File
 import java.util.concurrent.TimeoutException
 
-const val GUI_VERSION = "1.0.3.fix2"
+const val GUI_VERSION = "1.0.4"
 
 fun main(args: Array<String>) {
     for (arg in args) {
