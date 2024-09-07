@@ -68,26 +68,38 @@ data class ApkBuilderPojo(
         deleteCache()
     }
 
-    fun deleteCache(){
-        File(workDir,"template").delete()
-        File(workDir,"decode").delete()
-        File(workDir,"centralizedAssets").delete()
+    fun deleteCache() {
+        File(workDir, "template").delete()
+        File(workDir, "decode").delete()
+        File(workDir, "centralizedAssets").delete()
     }
 
-    fun centralizedAssetsFile() = File(workDir!!, "centralizedAssets")
+    fun centralizedAssetsFile() = File(workDir!!, "centralizedAssets").apply { if (!exists()) mkdirs() }
 
     fun centralizedAssets(): String {
         val file = centralizedAssetsFile()
-        file.delete()
+        if (assets.size == 1) {
+            val assetFile = File(assets.first())
+            if (assetFile.absolutePath == file.absolutePath) {
+                // asset 数组就一个参数并且还是与 centralizedAssets 路径一致
+                throw IllegalArgumentException("asset path is same as centralizedAssets path")
+            }
+        }
+        log("[INFO] delete centralizedAssets cache: ${file.deleteRecursively()}")
         if (!file.exists()) file.mkdirs()
         for (asset in assets) {
             kotlin.runCatching {
-                com.github.zimoyin.autox.builder.copy(File(asset),file)
+                val assetFile = File(asset)
+                if (assetFile.absolutePath == file.absolutePath) {
+                    log("[WARN] asset path is same as centralizedAssets path")
+                    return@runCatching
+                }
+                com.github.zimoyin.autox.builder.copy(assetFile, file)
             }.onFailure {
                 log("[ERROR] ${it.message}")
             }
         }
 
-        return File(workDir!!, "centralizedAssets").apply { if (!exists()) mkdirs() }.absolutePath
+        return file.absolutePath
     }
 }

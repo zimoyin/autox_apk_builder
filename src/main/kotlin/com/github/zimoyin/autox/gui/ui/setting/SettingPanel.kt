@@ -6,6 +6,7 @@ import com.github.zimoyin.autox.builder.setting.PermissionsSetting.*
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import com.github.zimoyin.autox.gui.ApkBuilderPojo
 import com.github.zimoyin.autox.gui.ui.IPanel
+import com.github.zimoyin.autox.gui.ui.console.ConsoleManager
 import com.github.zimoyin.autox.gui.ui.setting.handle.SettingDataHandle
 import java.awt.Color
 import java.awt.GridBagConstraints
@@ -33,9 +34,16 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
         insets = Insets(5, 5, 5, 5)
     }
 
+    private fun getCentralizedAssets(): String? {
+        return config?.assets?.let {
+            if (it.size == 1) it.first() else config.centralizedAssets()
+        }
+    }
+
     private fun SettingComponent.init() {
+
         workDirField.text = config?.workDir ?: ""
-        assetsField.text = config?.centralizedAssets() ?: ""
+        assetsField.text = getCentralizedAssets() ?: ""
         projectJsonField.text = (config?.projectJson ?: "").let {
             if (File(it).exists()) it else ""
         }
@@ -166,6 +174,7 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
         addOkButton()
         addClearButton()
         addExitButton()
+        addOpenConsoleButton()
         val scrollPane = JScrollPane(panel).apply {
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
             horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
@@ -191,6 +200,7 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
             insets = Insets(25, 0, 5, 0)
         })
     }
+
 
     private fun addClearButton(y: Int = Y++) {
         add(JButton("重置").apply {
@@ -230,6 +240,20 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
                 if (result == JOptionPane.YES_OPTION) {
                     exitProcess(0)
                 }
+            }
+        }, c.apply {
+            c.gridwidth = 0
+            gridy = y
+            gridx = 0
+            insets = Insets(2, 0, 5, 0)
+        })
+    }
+    private fun addOpenConsoleButton(y: Int = Y++) {
+        add(JButton("打开控制台").apply {
+            // 监听
+            background = Color(81,83,85)
+            addActionListener {
+                ConsoleManager.showConsole()
             }
         }, c.apply {
             c.gridwidth = 0

@@ -8,7 +8,7 @@ import com.github.zimoyin.autox.builder.tools.writeToFile
 import java.io.File
 import java.util.concurrent.TimeoutException
 
-const val GUI_VERSION = "1.0.4"
+const val GUI_VERSION = "1.0.5"
 
 fun main(args: Array<String>) {
     for (arg in args) {
@@ -31,14 +31,23 @@ fun main(args: Array<String>) {
 
     // 如果开启GUI（存在配置文件且gui 为 true  或者 不存在配置文件）
     if (config.isNotNull()) {
+        log("[INFO] config is found")
+        log("[INFO] load project.json : ${config?.projectJson}")
         if (isGUI) {
+            log("[INFO] Start GUI")
             Application.start(config)
         } else {
+            log("[INFO] No GUI")
             runNoGui(config)
         }
     } else {
-        if (isGUI) Application.start()
-        else throw IllegalArgumentException("Not found config file. Use -createConfig to create config file")
+        log("[INFO] No config file found")
+        if (isGUI) {
+            log("[INFO] Start GUI")
+            Application.start()
+        } else {
+            throw IllegalArgumentException("Not found config file. Use -createConfig to create config file")
+        }
     }
 }
 
@@ -64,6 +73,7 @@ private fun runNoGui(config: ApkBuilderPojo?) {
     if (projectJsonPath == null) {
         thread.start()
         Thread.sleep(1000)
+
     }
     projectJsonPath = projectJsonPath ?: throw IllegalArgumentException("projectJson is null")
     if (File(projectJsonPath!!).exists().not()) throw IllegalArgumentException("projectJson is not found")
@@ -84,7 +94,7 @@ private fun getConfig(args0: Array<String>): ApkBuilderPojo? {
                 val json = JsonObject(file.readText())
                 val gui = json.getBoolean("gui")
                 val assets = json.getObject<List<String>>("assets")
-                return  json.parseToObject<ApkBuilderPojo>()
+                return json.parseToObject<ApkBuilderPojo>()
             }
         }
     }
@@ -102,7 +112,7 @@ private fun isGui(args0: Array<String>): Boolean {
         if (file.exists()) {
             runCatching {
                 result = JsonObject(file.readText()).getBoolean("gui")
-                if (result){
+                if (result) {
                     return true
                 }
             }

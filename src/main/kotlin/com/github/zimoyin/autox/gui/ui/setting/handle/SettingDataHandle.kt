@@ -28,12 +28,6 @@ class SettingDataHandle(private val scmt: SettingComponent) {
         }
 
 
-        val console = Console()
-        addLogListener {
-            console.logArea(it.message)
-        }
-        console.createConsole()
-
         log("Start Building APK")
 
         // 装配 Result

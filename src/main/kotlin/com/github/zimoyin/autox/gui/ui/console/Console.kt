@@ -1,5 +1,6 @@
 package com.github.zimoyin.autox.gui.ui.console
 
+import com.github.zimoyin.autox.builder.addLogListener
 import com.github.zimoyin.autox.gui.Application
 import java.awt.BorderLayout
 import java.awt.Dimension
@@ -11,6 +12,27 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.*
 
+
+object ConsoleManager {
+    private val consoleFactory: Console = Console().apply {
+        addLogListener {
+            logArea(it.message)
+        }
+    }
+
+    private var console: Console? = null
+
+    fun showConsole() {
+        if (console == null) {
+            console = consoleFactory.createConsole()
+        } else {
+            if (console?.isVisible == false) {
+                console?.isVisible = true
+            }
+        }
+    }
+}
+
 /**
  *
  * @author : zimo
@@ -19,7 +41,11 @@ import javax.swing.*
 class Console {
     private val logArea = JTextArea()
     private lateinit var frame: JFrame
-
+    var isVisible: Boolean
+        get() = frame.isVisible
+        set(value) {
+            frame.isVisible = value
+        }
 
     fun createConsole(parentFrame: JFrame? = null): Console {
         frame = JFrame()
@@ -70,18 +96,21 @@ class Console {
         })
 
         // Handle dialog closing with a confirmation dialog
+//        frame.defaultCloseOperation = JDialog.DISPOSE_ON_CLOSE
         frame.defaultCloseOperation = JDialog.DO_NOTHING_ON_CLOSE
         frame.addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent) {
-                val result = JOptionPane.showConfirmDialog(
-                    frame,
-                    "关闭控制台后无法再次打开，并且打包任务不会停止，是否继续？",
-                    "误操作警告",
-                    JOptionPane.YES_NO_OPTION
-                )
-                if (result == JOptionPane.YES_OPTION) {
-                    frame.dispose()
-                }
+//                val result = JOptionPane.showConfirmDialog(
+//                    frame,
+//                    "关闭控制台后无法再次打开，并且打包任务不会停止，是否继续？",
+//                    "误操作警告",
+//                    JOptionPane.YES_NO_OPTION
+//                )
+//                if (result == JOptionPane.YES_OPTION) {
+//                    frame.dispose()
+//                }
+
+                frame.isVisible = false
             }
         })
 
