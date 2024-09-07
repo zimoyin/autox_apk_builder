@@ -1,6 +1,5 @@
 package com.github.zimoyin.autox.gui.ui.setting.handle
 
-import com.github.zimoyin.autox.builder.addLogListener
 import com.github.zimoyin.autox.builder.log
 import com.github.zimoyin.autox.builder.setting.PermissionsSetting
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
@@ -8,7 +7,7 @@ import com.github.zimoyin.autox.builder.setting.RunSetting
 import com.github.zimoyin.autox.gui.ApkBuilderPojo
 import com.github.zimoyin.autox.gui.Result
 import com.github.zimoyin.autox.gui.ui.NotificationWindows
-import com.github.zimoyin.autox.gui.ui.console.Console
+import com.github.zimoyin.autox.gui.ui.console.ConsoleManager
 import com.github.zimoyin.autox.gui.ui.setting.SettingComponent
 import java.io.File
 
@@ -27,7 +26,7 @@ class SettingDataHandle(private val scmt: SettingComponent) {
             return@apply
         }
 
-
+        ConsoleManager
         log("Start Building APK")
 
         // 装配 Result

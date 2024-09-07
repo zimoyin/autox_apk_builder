@@ -14,21 +14,21 @@ import javax.swing.*
 
 
 object ConsoleManager {
-    private val consoleFactory: Console = Console().apply {
-        addLogListener {
-            logArea(it.message)
+    private var console: Console? = null
+
+    init {
+        Console().apply {
+            addLogListener {
+                logArea(it.message)
+            }
+            console = createConsole()
+            console?.isVisible = false
         }
     }
 
-    private var console: Console? = null
-
     fun showConsole() {
-        if (console == null) {
-            console = consoleFactory.createConsole()
-        } else {
-            if (console?.isVisible == false) {
-                console?.isVisible = true
-            }
+        if (console?.isVisible == false) {
+            console?.isVisible = true
         }
     }
 }
