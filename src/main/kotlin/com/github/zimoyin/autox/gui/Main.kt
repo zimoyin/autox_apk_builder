@@ -5,6 +5,7 @@ import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import com.github.zimoyin.autox.builder.tools.JsonObject
 import com.github.zimoyin.autox.builder.tools.toJsonObject
 import com.github.zimoyin.autox.builder.tools.writeToFile
+import com.github.zimoyin.autox.gui.ui.NotificationWindows
 import java.io.File
 import java.util.concurrent.TimeoutException
 

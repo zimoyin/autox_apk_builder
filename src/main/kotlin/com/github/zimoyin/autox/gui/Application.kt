@@ -2,6 +2,7 @@ package com.github.zimoyin.autox.gui
 
 import com.formdev.flatlaf.FlatDarculaLaf
 import com.github.zimoyin.autox.builder.log
+import com.github.zimoyin.autox.gui.ui.NotificationWindows
 import com.github.zimoyin.autox.gui.ui.setting.SettingPanel
 import java.awt.Image
 import java.awt.event.WindowAdapter

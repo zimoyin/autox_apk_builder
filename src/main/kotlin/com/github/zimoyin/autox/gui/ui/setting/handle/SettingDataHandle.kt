@@ -39,9 +39,17 @@ class SettingDataHandle(private val scmt: SettingComponent) {
                     it.printStackTrace()
                     config.deleteCache()
                 }
-                onSuccess = {
-                    NotificationWindows.info("Build APK Success")
-                    Result.openFileExplorer(it.parent)
+                onSuccess = { file ->
+                    NotificationWindows.infoConfirmDialog(
+                        "Build APK Success. \n" +
+                                "If you want to open the file.    \n" +
+                                "please click yes."
+                    ).let {
+                        if (it) {
+                            Result.openFileExplorer(file.parent)
+                        }
+                    }
+
                     config.deleteCache()
                 }
                 build()
