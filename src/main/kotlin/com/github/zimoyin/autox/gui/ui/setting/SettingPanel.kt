@@ -47,10 +47,18 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
         projectJsonField.text = (config?.projectJson ?: "").let {
             if (File(it).exists()) it else ""
         }
-        templateApkPathField.text = config?.templateApkPath ?: ""
-        splashImageTextField.text = config?.startIconPath ?: ""
-        appIconTextField.text = config?.iconPath ?: ""
-        signatureFileTextField.text = config?.signatureFile ?: ""
+        templateApkPathField.text = (config?.templateApkPath ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        splashImageTextField.text = (config?.startIconPath ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        appIconTextField.text = (config?.iconPath ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        signatureFileTextField.text = (config?.signatureFile ?: "").let {
+            if (File(it).exists()) it else ""
+        }
         signatureAliasField.text = config?.signatureAlias ?: ""
         signaturePasswordField.text = config?.signaturePassword ?: ""
     }
@@ -248,10 +256,11 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
             insets = Insets(2, 0, 5, 0)
         })
     }
+
     private fun addOpenConsoleButton(y: Int = Y++) {
         add(JButton("打开控制台").apply {
             // 监听
-            background = Color(81,83,85)
+            background = Color(81, 83, 85)
             addActionListener {
                 ConsoleManager.showConsole()
             }
