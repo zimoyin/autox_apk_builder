@@ -63,6 +63,7 @@ class SettingComponent {
         }
 
         val runSetting = projectJsonBean.launchConfig
+        displaySplashCheckBox.isSelected = runSetting.displaySplash
         hideDesktopIconCheckBox.isSelected = runSetting.hideLauncher
         stableModeCheckBox.isSelected = runSetting.stableMode
         hideLogCheckBox.isSelected = runSetting.hideLogs
