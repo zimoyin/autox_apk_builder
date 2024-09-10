@@ -1,5 +1,6 @@
 package com.github.zimoyin.autox.gui
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.zimoyin.autox.builder.log
 import java.io.File
 import java.nio.file.Files
@@ -61,6 +62,9 @@ data class ApkBuilderPojo(
      */
     val signaturePassword: String? = null,
 ) {
+    @JsonIgnore
+    var configPath = "./apk_builder_config.json"
+
     init {
         if (workDir == null) workDir = Files.createTempDirectory("autox_apk_builder").toFile().apply {
             deleteOnExit()

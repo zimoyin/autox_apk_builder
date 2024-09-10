@@ -4,6 +4,9 @@ import com.github.zimoyin.autox.builder.log
 import com.github.zimoyin.autox.builder.setting.PermissionsSetting
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import com.github.zimoyin.autox.builder.setting.RunSetting
+import com.github.zimoyin.autox.builder.tools.JsonUtils
+import com.github.zimoyin.autox.builder.tools.toJsonObject
+import com.github.zimoyin.autox.builder.tools.writeToFile
 import com.github.zimoyin.autox.gui.ApkBuilderPojo
 import com.github.zimoyin.autox.gui.Result
 import com.github.zimoyin.autox.gui.ui.NotificationWindows
@@ -69,7 +72,12 @@ class SettingDataHandle(private val scmt: SettingComponent) {
         signatureFile = scmt.signatureFileTextField.text,
         signatureAlias = scmt.signatureAliasField.text,
         signaturePassword = scmt.signaturePasswordField.text,
-    )
+    ).apply {
+        scmt.configField.text.let {
+            if (it == null || it.isEmpty() || it.isBlank()) return@let
+            configPath = it
+        }
+    }
 
     fun buildProjectJsonBean(
         scmt: SettingComponent,
@@ -192,5 +200,35 @@ class SettingDataHandle(private val scmt: SettingComponent) {
         libJpegSoCheckBox.isSelected = false
         libleptonicaSoCheckBox.isSelected = false
         libP7zipSoCheckBox.isSelected = false
+    }
+
+    fun save() {
+        val config = buildApkBuilderPojo(scmt)
+        val projectBean = buildProjectJsonBean(scmt)
+
+        try {
+            config.toJsonObject().writeToFile(config.configPath)
+        } catch (e: Exception) {
+            throw Exception("Save config error: ${e.message}")
+        }
+
+        val jsonPath = config.projectJson
+        val jsonSavePath = jsonPath?:File(config.configPath).parentFile.resolve("project.json").absolutePath
+        if (jsonPath != null) {
+            val json = File(jsonPath).readText().toJsonObject()
+            val jsonObject = projectBean.toJsonObject()
+            jsonObject.foreach { (key, value) ->
+                json[key] = value
+            }
+
+            json.writeToFile(jsonSavePath)
+        } else {
+            try {
+                projectBean.toJsonObject()
+                    .writeToFile(jsonSavePath)
+            } catch (e: Exception) {
+                throw Exception("Save project.json error: ${e.message}")
+            }
+        }
     }
 }

@@ -2,11 +2,14 @@ package com.github.zimoyin.autox.gui
 
 import com.formdev.flatlaf.FlatDarculaLaf
 import com.github.zimoyin.autox.builder.log
+import com.github.zimoyin.autox.builder.tools.toJsonObject
+import com.github.zimoyin.autox.builder.tools.writeToFile
 import com.github.zimoyin.autox.gui.ui.NotificationWindows
 import com.github.zimoyin.autox.gui.ui.setting.SettingPanel
 import java.awt.Image
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
+import java.io.File
 import javax.swing.ImageIcon
 import javax.swing.JFrame
 
@@ -23,6 +26,14 @@ class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERS
             private set
 
         fun start(config: ApkBuilderPojo? = null) {
+            val config0 = config ?: ApkBuilderPojo().apply {
+                this.workDir = File("./cache").absolutePath
+            }
+            if (config == null) {
+                if (NotificationWindows.infoConfirmDialog("没有检测配置文件是否在当前工作目录下创建一个配置文件")) {
+                    config0.toJsonObject().writeToFile("./apk_builder_config.json")
+                }
+            }
             log("AutoX APK Builder：Start")
 
             val imageIcon = ImageIcon(Application::class.java.getResource("/build.png"));
@@ -37,7 +48,7 @@ class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERS
             application.setBounds(width / 2 - frameWidth / 2, height / 2 - frameHeight / 2, frameWidth, frameHeight)
             log("bounds: ${application.bounds}")
             application.setDefaultCloseOperation(EXIT_ON_CLOSE)
-            application.contentPane.add(SettingPanel(config).createPanel())
+            application.contentPane.add(SettingPanel(config0).createPanel())
             application.isResizable = false
             application.addWindowListener(object : WindowAdapter() {
                 override fun windowClosing(e: WindowEvent) {

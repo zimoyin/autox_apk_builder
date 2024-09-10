@@ -6,6 +6,9 @@ import com.github.zimoyin.autox.builder.setting.LibItem.*
 import com.github.zimoyin.autox.builder.setting.LibSetting
 import com.github.zimoyin.autox.builder.setting.PermissionsSetting.*
 import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
+import com.github.zimoyin.autox.builder.tools.JsonUtils
+import com.github.zimoyin.autox.builder.tools.toJsonObject
+import com.github.zimoyin.autox.gui.ApkBuilderPojo
 import java.io.File
 import java.util.concurrent.TimeoutException
 import javax.swing.JButton
@@ -85,6 +88,54 @@ class SettingComponent {
         removeAccessibilityCheckBox.isSelected = runSetting.hideAccessibilityServices
     }
 
+
+    private fun getCentralizedAssets(config: ApkBuilderPojo?): String? {
+        return config?.assets?.let {
+            if (it.size == 1) it.first() else config.centralizedAssets()
+        }
+    }
+
+    fun updateConfig() {
+        if (configField.text == null || configField.text.isEmpty() || configField.text.isBlank()) return
+        val configPath = File(configField.text)
+        if (!configPath.exists()) return
+        val config = kotlin.runCatching { JsonUtils.stringToObject<ApkBuilderPojo>(configPath.readText()) }.getOrNull()
+        workDirField.text = config?.workDir ?: ""
+        assetsField.text = getCentralizedAssets(config) ?: ""
+        projectJsonField.text = (config?.projectJson ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        templateApkPathField.text = (config?.templateApkPath ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        splashImageTextField.text = (config?.startIconPath ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        appIconTextField.text = (config?.iconPath ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        signatureFileTextField.text = (config?.signatureFile ?: "").let {
+            if (File(it).exists()) it else ""
+        }
+        signatureAliasField.text = config?.signatureAlias ?: ""
+        signaturePasswordField.text = config?.signaturePassword ?: ""
+    }
+
+    val configField = JTextField(20).apply {
+        document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent?) {
+                updateConfig()
+            }
+
+            override fun removeUpdate(e: DocumentEvent?) {
+                updateConfig()
+            }
+
+            override fun changedUpdate(e: DocumentEvent?) {
+                updateConfig()
+            }
+        })
+    }
     val workDirField = JTextField(20)
     val projectJsonField = JTextField(20).apply {
         document.addDocumentListener(object : DocumentListener {
@@ -218,14 +269,14 @@ class SettingComponent {
                 libs.add(LibItem.LIBHIAI_IR_SO)
                 libs.add(LibItem.LIBHIAI_IR_BUILD_SO)
                 libs.add(LibItem.LIBNATIVE_SO)
-           } else {
-               libs.remove(LibItem.LIBCXX_SHARED_SO)
-               libs.remove(LibItem.LIBPADDLE_LIGHT_API_SHARED_SO)
-               libs.remove(LibItem.LIBHIAI_SO)
-               libs.remove(LibItem.LIBHIAI_IR_SO)
-               libs.remove(LibItem.LIBHIAI_IR_BUILD_SO)
-               libs.remove(LibItem.LIBNATIVE_SO)
-           }
+            } else {
+                libs.remove(LibItem.LIBCXX_SHARED_SO)
+                libs.remove(LibItem.LIBPADDLE_LIGHT_API_SHARED_SO)
+                libs.remove(LibItem.LIBHIAI_SO)
+                libs.remove(LibItem.LIBHIAI_IR_SO)
+                libs.remove(LibItem.LIBHIAI_IR_BUILD_SO)
+                libs.remove(LibItem.LIBNATIVE_SO)
+            }
         }
     }
     val libcxxSharedSoCheckBox = JCheckBox("LIBCXX_SHARED_SO").apply {

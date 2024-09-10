@@ -1,9 +1,6 @@
 package com.github.zimoyin.autox.gui.ui.setting
 
 import com.github.zimoyin.autox.builder.log
-import com.github.zimoyin.autox.builder.setting.LibItem.*
-import com.github.zimoyin.autox.builder.setting.PermissionsSetting.*
-import com.github.zimoyin.autox.builder.setting.ProjectJsonBean
 import com.github.zimoyin.autox.gui.ApkBuilderPojo
 import com.github.zimoyin.autox.gui.ui.IPanel
 import com.github.zimoyin.autox.gui.ui.console.ConsoleManager
@@ -13,7 +10,6 @@ import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.Insets
 import java.io.File
-import java.nio.file.Files
 import javax.swing.*
 import javax.swing.filechooser.FileNameExtensionFilter
 import kotlin.system.exitProcess
@@ -26,6 +22,12 @@ import kotlin.system.exitProcess
 class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagLayout()) {
 
     private val scmt = SettingComponent().apply {
+        config?.configPath?.let {
+            if (File(it).exists()) {
+                this.configField.text = it
+                return@apply
+            }
+        }
         init()
     }
     private var Y = 0
@@ -41,7 +43,6 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
     }
 
     private fun SettingComponent.init() {
-
         workDirField.text = config?.workDir ?: ""
         assetsField.text = getCentralizedAssets() ?: ""
         projectJsonField.text = (config?.projectJson ?: "").let {
@@ -64,6 +65,10 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
     }
 
     override fun createPanel(panel: IPanel): JComponent {
+        addLabel("根配置:")
+        addField("配置文件:", scmt.configField)
+        addJSeparator(button = 0)
+        addJSeparator(top = 2, button = 15)
         addLabel("工作环境:")
         addFileChooserField(
             "project.json 路径:",
@@ -180,9 +185,9 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
         addField("签名密码:", scmt.signaturePasswordField)
 
         addOkButton()
-        addClearButton()
-        addExitButton()
+        addSaveButton()
         addOpenConsoleButton()
+        addExitButton()
         val scrollPane = JScrollPane(panel).apply {
             verticalScrollBarPolicy = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
             horizontalScrollBarPolicy = JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
@@ -210,43 +215,20 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
     }
 
 
-    private fun addClearButton(y: Int = Y++) {
-        add(JButton("重置").apply {
+    private fun addSaveButton(y: Int = Y++) {
+        add(JButton("保存配置").apply {
             // 监听
-            background = Color(0xB54747)
+            background = Color(0x2B675F)
             addActionListener {
                 val result = JOptionPane.showConfirmDialog(
                     this,
-                    "是否清空所有内容?",
+                    "是否保存配置?",
                     "误操作警告",
                     JOptionPane.YES_NO_OPTION
                 )
                 if (result == JOptionPane.YES_OPTION) {
-                    log("重置")
-                    SettingDataHandle(scmt).rest()
-                }
-            }
-        }, c.apply {
-            c.gridwidth = 0
-            gridy = y
-            gridx = 0
-            insets = Insets(2, 0, 5, 0)
-        })
-    }
-
-    private fun addExitButton(y: Int = Y++) {
-        add(JButton("退出").apply {
-            // 监听
-            background = Color(0x3C3C3E)
-            addActionListener {
-                val result = JOptionPane.showConfirmDialog(
-                    this,
-                    "是否退出应用程序?",
-                    "误操作警告",
-                    JOptionPane.YES_NO_OPTION
-                )
-                if (result == JOptionPane.YES_OPTION) {
-                    exitProcess(0)
+                    log("保存配置")
+                    SettingDataHandle(scmt).save()
                 }
             }
         }, c.apply {
@@ -263,6 +245,30 @@ class SettingPanel(private val config: ApkBuilderPojo? = null) : IPanel(GridBagL
             background = Color(81, 83, 85)
             addActionListener {
                 ConsoleManager.showConsole()
+            }
+        }, c.apply {
+            c.gridwidth = 0
+            gridy = y
+            gridx = 0
+            insets = Insets(2, 0, 5, 0)
+        })
+    }
+
+    private fun addExitButton(y: Int = Y++) {
+        add(JButton("退出").apply {
+            // 监听
+            background = Color(0x3C3C3E)
+            background = Color(0xB54747)
+            addActionListener {
+                val result = JOptionPane.showConfirmDialog(
+                    this,
+                    "是否退出应用程序?",
+                    "误操作警告",
+                    JOptionPane.YES_NO_OPTION
+                )
+                if (result == JOptionPane.YES_OPTION) {
+                    exitProcess(0)
+                }
             }
         }, c.apply {
             c.gridwidth = 0

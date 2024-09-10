@@ -9,7 +9,7 @@ import com.github.zimoyin.autox.gui.ui.NotificationWindows
 import java.io.File
 import java.util.concurrent.TimeoutException
 
-const val GUI_VERSION = "1.0.5"
+const val GUI_VERSION = "1.0.6"
 
 fun main(args: Array<String>) {
     for (arg in args) {
@@ -95,7 +95,9 @@ private fun getConfig(args0: Array<String>): ApkBuilderPojo? {
                 val json = JsonObject(file.readText())
                 val gui = json.getBoolean("gui")
                 val assets = json.getObject<List<String>>("assets")
-                return json.parseToObject<ApkBuilderPojo>()
+                return json.parseToObject<ApkBuilderPojo>().apply {
+                    configPath = file.absolutePath
+                }
             }
         }
     }
