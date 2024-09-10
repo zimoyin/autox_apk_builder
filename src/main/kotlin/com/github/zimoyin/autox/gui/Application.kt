@@ -29,11 +29,6 @@ class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERS
             val config0 = config ?: ApkBuilderPojo().apply {
                 this.workDir = File("./cache").absolutePath
             }
-            if (config == null) {
-                if (NotificationWindows.infoConfirmDialog("没有检测配置文件是否在当前工作目录下创建一个配置文件")) {
-                    config0.toJsonObject().writeToFile("./apk_builder_config.json")
-                }
-            }
             log("AutoX APK Builder：Start")
 
             val imageIcon = ImageIcon(Application::class.java.getResource("/build.png"));
@@ -59,6 +54,17 @@ class Application private constructor() : JFrame("AutoX APK Builder - v$GUI_VERS
             application.revalidate()
             application.repaint()
             application.isVisible = true
+
+            if (config == null) {
+                if (NotificationWindows.infoConfirmDialog("没有检测配置文件是否在当前工作目录下创建一个配置文件")) {
+                    config0.toJsonObject().writeToFile("./apk_builder_config.json")
+                    application.contentPane.removeAll()
+                    application.contentPane.add(SettingPanel(config0).createPanel())
+                    application.revalidate()
+                    application.repaint()
+                    NotificationWindows.info("配置文件创建完成")
+                }
+            }
         }
     }
 }
