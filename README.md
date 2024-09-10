@@ -41,11 +41,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.zimoyin:autojsx_builder:1.0.5")
-    implementation("com.github.zimoyin:autojsx_builder:1.0.5:apksigner")
+    implementation("com.github.zimoyin:autojsx_builder:1.0.6")
+    implementation("com.github.zimoyin:autojsx_builder:1.0.6:apksigner")
     testImplementation(kotlin("test"))
 }
-
 ```
 
 示例
