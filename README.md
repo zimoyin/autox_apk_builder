@@ -1,7 +1,7 @@
 # Autox 打包工具
 Autox 是基于一个 template.apk 的模板进行打包的，可以通过修改 template.apk 来实现打包。
 
-## 运行
+## 运行(JAR 运行方式，EXE 不在此列)
 ### A. 界面运行
 ```shell
 java -jar xxx.jar 
